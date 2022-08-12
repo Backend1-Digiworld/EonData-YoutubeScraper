@@ -3,12 +3,15 @@ from datetime import datetime, timedelta
 
 from src.libs.video import get_video_id_by_url, get_video_info, get_video_list_byChannel, get_videos_by_search
 from src.services.video import createVideo, getVideosById, getVideoByChannelName, getVideosByChannel, getVideosDays, updateVideo
+from src.services.videosSearch import createVideoSearch, updateVideoSearch, getVideosSearchById, getVideosSearchByChannel
+from src.libs.channel import get_channelId
 
 def saveVideosByChannel(channel: str):
     try:
         videoComment = []
         date = datetime.now() - timedelta(days= 5)
-        videosFind = get_video_list_byChannel(channel) 
+        channelId = get_channelId(channel)
+        videosFind = get_video_list_byChannel(channelId) 
         
         for video in videosFind:
             videoExist = getVideosById(video['id'])
@@ -47,15 +50,15 @@ def saveVideoBySearch(search: str):
         date = datetime.now() - timedelta(days= 5)
         videosFind = get_videos_by_search(search) 
         for video in videosFind:
-            videoExist = getVideosById(video['id'])
+            videoExist = getVideosSearchById(video['id'])
             if not videoExist:
-                createVideo(video)
+                createVideoSearch(video)
                 videoComment.append(video)
             else:
                 if video['date_update'] >= date:
                     if video['commentCount'] != videoExist['commentCount']:
                         videoComment.append(video) 
-                updateVideo(video, video['id'],)
+                updateVideoSearch(video, video['id'],)
         return videoComment
     except ValueError:
         print(ValueError)

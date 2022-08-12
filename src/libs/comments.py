@@ -16,10 +16,14 @@ def get_comments(youtube, **kwargs):
 def get_comments_ofvideos(videos):
     comments = []
     replies = []
-    logging.info(f'Extrayendo informacion de los comentarios de '+str(len(videos))+' los videos')
+    logging.info(f'Extrayendo informacion de los comentarios de '+str(len(videos))+' videos')
     for video in videos:
         logging.info(f'Extrayendo informacion de los comentarios del video '+video['id'] +' total comentarios: '+str(video['commentCount']))
-        cantidad = video['commentCount']
+        if int(video['commentCount']) != None:
+            cantidad = int(video['commentCount'])
+        else:
+            cantidad = 0
+        
         if cantidad < 100:
             result = cantidad
         else:
@@ -36,6 +40,11 @@ def get_comments_ofvideos(videos):
             if not items:
                 break
             for item in items:
+                if 'authorChannelId' in item["snippet"]["topLevelComment"]["snippet"]:
+                    autor = item["snippet"]["topLevelComment"]["snippet"]["authorChannelId"]['value']
+                else:
+                    autor = None
+
                 comment = {
                     'id': item["snippet"]["topLevelComment"]["id"],
                     'videoId': video['id'],
@@ -44,7 +53,7 @@ def get_comments_ofvideos(videos):
                     'authorDisplayName': item["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"],
                     'authorProfileImageUrl': item["snippet"]["topLevelComment"]["snippet"]["authorProfileImageUrl"],
                     'authorChannelUrl': item["snippet"]["topLevelComment"]["snippet"]["authorChannelUrl"],
-                    'authorChannelId': item["snippet"]["topLevelComment"]["snippet"]["authorChannelId"]['value'],
+                    'authorChannelId': autor,
                     'likeCount': item["snippet"]["topLevelComment"]["snippet"]["likeCount"],
                     'totalReplyCount': item["snippet"]["totalReplyCount"],
                     'publishedAt': item["snippet"]["topLevelComment"]["snippet"]["publishedAt"],
@@ -56,6 +65,16 @@ def get_comments_ofvideos(videos):
                 if 'replies' in item:
                     comment_replies = item['replies']['comments']
                     for replie in comment_replies:
+                        if 'authorChannelId' in replie["snippet"]:
+                            autorrep = replie["snippet"]["authorChannelId"]['value']
+                        else:
+                            autorrep = None
+                        
+                        if 'totalReplyCount' in replie["snippet"]:
+                            replycount = replie["snippet"]
+                        else:
+                            replycount = 0
+                        
                         rep = {
                             'id': replie['id'],
                             'commentId': item["snippet"]["topLevelComment"]["id"],
@@ -65,8 +84,9 @@ def get_comments_ofvideos(videos):
                             'authorDisplayName': replie["snippet"]["authorDisplayName"],
                             'authorProfileImageUrl': replie["snippet"]["authorProfileImageUrl"],
                             'authorChannelUrl': replie["snippet"]["authorChannelUrl"],
-                            'authorChannelId': replie["snippet"]["authorChannelId"]['value'],
+                            'authorChannelId': autorrep,
                             'likeCount': replie["snippet"]["likeCount"],
+                            'totalReplyCount': replycount,
                             'publishedAt': replie["snippet"]["publishedAt"],
                             'updatedAt': replie["snippet"]["updatedAt"],
                             'date_update': datetime.now()
@@ -109,6 +129,10 @@ def get_comments_onevideo(videoId, videoCommnets):
         if not items:
             break
         for item in items:
+            if 'authorChannelId' in item["snippet"]["topLevelComment"]["snippet"]:
+                autor = item["snippet"]["topLevelComment"]["snippet"]["authorChannelId"]['value']
+            else:
+                autor = None
             comment = {
                 'id': item["snippet"]["topLevelComment"]["id"],
                 'videoId': videoId,
@@ -117,7 +141,7 @@ def get_comments_onevideo(videoId, videoCommnets):
                 'authorDisplayName': item["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"],
                 'authorProfileImageUrl': item["snippet"]["topLevelComment"]["snippet"]["authorProfileImageUrl"],
                 'authorChannelUrl': item["snippet"]["topLevelComment"]["snippet"]["authorChannelUrl"],
-                'authorChannelId': item["snippet"]["topLevelComment"]["snippet"]["authorChannelId"]['value'],
+                'authorChannelId': autor,
                 'likeCount': item["snippet"]["topLevelComment"]["snippet"]["likeCount"],
                 'totalReplyCount': item["snippet"]["totalReplyCount"],
                 'publishedAt': item["snippet"]["topLevelComment"]["snippet"]["publishedAt"],
@@ -129,6 +153,15 @@ def get_comments_onevideo(videoId, videoCommnets):
             if 'replies' in item:
                 comment_replies = item['replies']['comments']
                 for replie in comment_replies:
+                    if 'authorChannelId' in replie["snippet"]:
+                        autorrep = replie["snippet"]["authorChannelId"]['value']
+                    else:
+                        autorrep = None
+                        
+                    if 'totalReplyCount' in replie["snippet"]:
+                        replycount = replie["snippet"]
+                    else:
+                        replycount = 0
                     rep = {
                         'id': replie['id'],
                         'commentId': item["snippet"]["topLevelComment"]["id"],
@@ -138,8 +171,9 @@ def get_comments_onevideo(videoId, videoCommnets):
                         'authorDisplayName': replie["snippet"]["authorDisplayName"],
                         'authorProfileImageUrl': replie["snippet"]["authorProfileImageUrl"],
                         'authorChannelUrl': replie["snippet"]["authorChannelUrl"],
-                        'authorChannelId': replie["snippet"]["authorChannelId"]['value'],
+                        'authorChannelId': autorrep,
                         'likeCount': replie["snippet"]["likeCount"],
+                        'totalReplyCount': replycount,
                         'publishedAt': replie["snippet"]["publishedAt"],
                         'updatedAt': replie["snippet"]["updatedAt"],
                         'date_update': datetime.now()

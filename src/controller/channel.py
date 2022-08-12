@@ -1,15 +1,18 @@
 # Libs
 from datetime import datetime, timedelta
 
-from src.libs.channel import get_channel_info
+from requests import get
+
+from src.libs.channel import get_channel_info, get_channelId
 from src.services.channel import createChannel, getChannelById, getChannelByName, updateChannel
 
-def saveChannel(channel: str):
+def saveChannel(channelName: str):
     channel = {}
     try:
-        channel = get_channel_info(channel)
+        channelId = get_channelId(channelName)
+        channel = get_channel_info(channelId)
         
-        channelExist = getChannelByName(channel)
+        channelExist = getChannelById(channelId)
         if not channelExist:
             createChannel(channel)
         else:    

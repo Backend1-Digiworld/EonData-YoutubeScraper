@@ -65,7 +65,7 @@ def get_channelvideosandcomments(channel: str):
     print('channel videos')
     logging.info(f'Aqui empieza extraccion de los videos del canal '+ channel)
     videos = saveVideosByChannel(channel)
-    logging.info(f'Aqui empieza la extraccion de los comentarios de los videos de la busqueda '+ search)
+    logging.info(f'Aqui empieza la extraccion de los comentarios de los videos del canal '+ channel)
     saveCommentsByVideos(videos)
 
 @app.command()
