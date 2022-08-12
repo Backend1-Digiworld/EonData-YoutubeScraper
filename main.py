@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from src.libs.video import get_video_id_by_url, get_video_info, get_vide_list_byChannel
-from src.libs.channel import get_channel_info
+from src.controller.video import saveVideosByChannel, saveVideoByUrl, saveVideoBySearch
+from src.controller.channel import saveChannel
+from src.controller.comments import saveCommentsByVideo, saveCommentsByVideos
 
 import typer
 
@@ -17,36 +18,63 @@ logging.basicConfig(
 )
 
 @app.command()
+def get_commnetsVideo(url: str):
+    print('Video '+ url)
+    logging.info(f'Aqui empieza extraccion del video '+ url)
+    video = saveVideoByUrl(url)
+    saveCommentsByVideo(video)
+
+@app.command()
 def get_video(url: str):
     print('Video '+ url)
     logging.info(f'Aqui empieza extraccion del video '+ url)
-    video_id = get_video_id_by_url(url)
-    get_video_info(video_id)
-
+    saveVideoByUrl(url)
+    
+@app.command()
+def get_all_bychannel(channel: str):
+    print('Channel '+channel)
+    logging.info(f'Aqui empieza extraccion del canal '+ channel)
+    saveChannel(channel)
+    logging.info(f'Aqui empieza extraccion de los videos del canal '+ channel)
+    videos = saveVideosByChannel(channel)
+    logging.info(f'Aqui empieza la extraccion de los comentarios de los videos del canal '+ channel)
+    saveCommentsByVideos(videos)
+    
 @app.command()
 def get_channel(channel: str):
     print('Channel '+channel)
     logging.info(f'Aqui empieza extraccion del canal '+ channel)
-    get_channel_info(channel)
-    
+    saveChannel(channel)
     
 @app.command()
 def get_search(search: str):
-    print('search')
+    print('search '+ search)
+    logging.info(f'Aqui empieza extraccion de videos por busqueda '+ search)
+    videos = saveVideoBySearch(search)
+    logging.info(f'Aqui empieza la extraccion de los comentarios de los videos de la busqueda '+ search)
+    saveCommentsByVideos(videos)
 
 @app.command()
 def get_channelvideos(channel: str):
     print('channel videos')
-    logging.info(f'Aqui empieza extraccion del los videos del canal '+ channel)
-    get_vide_list_byChannel(channel)
+    logging.info(f'Aqui empieza extraccion de los videos del canal '+ channel)
+    saveVideosByChannel(channel)
+
+@app.command()
+def get_channelvideosandcomments(channel: str):
+    print('channel videos')
+    logging.info(f'Aqui empieza extraccion de los videos del canal '+ channel)
+    videos = saveVideosByChannel(channel)
+    logging.info(f'Aqui empieza la extraccion de los comentarios de los videos de la busqueda '+ search)
+    saveCommentsByVideos(videos)
 
 @app.command()
 def get_channelandvideos(channel: str):
     print('Channel '+channel)
     logging.info(f'Aqui empieza extraccion del canal '+ channel)
-    get_channel_info(channel)
-    logging.info(f'Aqui empieza extraccion del los videos del canal '+ channel)
-    get_vide_list_byChannel(channel)
+    saveChannel(channel)
+    logging.info(f'Aqui empieza extraccion de los videos del canal '+ channel)
+    saveVideosByChannel(channel)
 
 if __name__ == "__main__":
     app()

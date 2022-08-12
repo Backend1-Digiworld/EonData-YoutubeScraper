@@ -7,17 +7,6 @@ import logging
 # authenticate to YouTube API
 youtube = youtube_authenticate()
 
-def get_video_id_by_url(url):
-    
-    parsed_url = p.urlparse(url)
-    
-    video_id = p.parse_qs(parsed_url.query).get("v")
-    if video_id:
-        return video_id[0]
-    else:
-        logging.error(f"Wasn't able to parse video URL: {url}")
-        raise Exception(f"Wasn't able to parse video URL: {url}")
-
 def get_video_details(youtube, **kwargs):
     return youtube.videos().list(
         part="snippet,contentDetails,statistics",
@@ -28,6 +17,23 @@ def get_channel_videos(youtube, **kwargs):
     return youtube.search().list(
         **kwargs
     ).execute()
+
+def search(youtube, **kwargs):
+    return youtube.search().list(
+        part="snippet",
+        **kwargs
+    ).execute()
+
+def get_video_id_by_url(url):
+    
+    parsed_url = p.urlparse(url)
+    
+    video_id = p.parse_qs(parsed_url.query).get("v")
+    if video_id:
+        return video_id[0]
+    else:
+        logging.error(f"Wasn't able to parse video URL: {url}")
+        raise Exception(f"Wasn't able to parse video URL: {url}")
 
 def get_video_info(video_id):
     video_response = get_video_details(youtube, id=video_id)
@@ -64,7 +70,7 @@ def get_video_info(video_id):
         'favoriteCount': statistics['favoriteCount'],
         'commentCount': statistics["commentCount"],
         'duration': duration_str,
-        'date_update': datetime.utcnow()
+        'date_update': datetime.now()
     }
     
     return video
@@ -113,7 +119,7 @@ def get_videos_info_byId(videos_ids):
             'favoriteCount': statistics['favoriteCount'],
             'commentCount': statistics["commentCount"],
             'duration': duration_str,
-            'date_update': datetime.utcnow()
+            'date_update': datetime.now()
         }
 
         videos.append(video)
@@ -121,7 +127,7 @@ def get_videos_info_byId(videos_ids):
         
     return videos
 
-def get_vide_list_byChannel(channel_id):
+def get_video_list_byChannel(channel_id):
     videos = []
     logging.info(f'Extrayendo informacion de los videos del canal '+ channel_id)
     
@@ -154,5 +160,35 @@ def get_vide_list_byChannel(channel_id):
         fecha = res.get("items")[len(res.get("items"))-1]['snippet']["publishedAt"].split("T")[0]
         SINCE = datetime.strptime(fecha, '%Y-%m-%d')
             
+    logging.info(f'Cantidad de videos encontrados '+ str(len(videos)))
+    return videos
+
+def get_videos_by_search(search: str): 
+    videos = []
+    cantidad = 100
+    logging.info(f'Extrayendo informacion de los videos de la consulta '+ search)
+    params = {
+            'q': search, 
+            'maxResults': 50,
+            'type': 'video', 
+            'order': 'relevance'
+    }
+    while cantidad > 0:
+        response = search(youtube, **params)
+        search_videos = response.get("items")
+        ids = []
+        for video in search_videos:
+            video_id = video["id"]["videoId"]
+            ids.append(video_id)   
+        
+        if len(ids)>0:
+            videos =  videos + get_videos_info_byId(ids)
+        
+        cantidad = cantidad - len(search_videos)
+        
+        if cantidad < 50:
+            params['maxResults'] = cantidad
+        if "nextPageToken" in response:
+            params["pageToken"] =  response["nextPageToken"]   
     logging.info(f'Cantidad de videos encontrados '+ str(len(videos)))
     return videos

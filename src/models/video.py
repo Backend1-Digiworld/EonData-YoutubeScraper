@@ -4,8 +4,8 @@ from sqlalchemy.sql.sqltypes import Integer, String, Boolean, DateTime, Text
 from src.settings.database import meta, engine
 
 VideoModel = Table(
-    "video", meta, 
-    Column("id", String(255), primary_key=True),
+    "videos", meta, 
+    Column("id", String(500), primary_key=True),
     Column("channelId", String(500)),
     Column("channelTitle", String(500)),
     Column("publishedAt", DateTime),

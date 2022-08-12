@@ -3,8 +3,8 @@ from sqlalchemy import Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String, Boolean, DateTime, Text
 from src.settings.database import meta, engine
 
-VideoModel = Table(
-    "channel", meta, 
+ChannelModel = Table(
+    "channels", meta, 
     Column("id", String(255), primary_key=True),
     Column("title", Text),
     Column("description", Text),

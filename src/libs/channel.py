@@ -1,6 +1,6 @@
 from .connection import youtube_authenticate
 import urllib.parse as p
-from datetime import datetime
+from datetime import date, datetime
 import logging
 
 # authenticate to YouTube API
@@ -27,7 +27,8 @@ def get_channel_info(channel_id):
         'country': snippet['country'],
         'viewCount': statistics['viewCount'],
         'subscriberCount': statistics['subscriberCount'],
-        'videoCount': statistics['videoCount']
+        'videoCount': statistics['videoCount'],
+        'date_update': datetime.now()
     }
     
     return channel
