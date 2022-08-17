@@ -6,6 +6,8 @@ from src.services.video import createVideo, getVideosById, getVideoByChannelName
 from src.services.videosSearch import createVideoSearch, updateVideoSearch, getVideosSearchById, getVideosSearchByChannel
 from src.libs.channel import get_channelId
 
+import logging
+
 def saveVideosByChannel(channel: str):
     try:
         videoComment = []
@@ -16,9 +18,11 @@ def saveVideosByChannel(channel: str):
         for video in videosFind:
             videoExist = getVideosById(video['id'])
             if not videoExist:
+                logging.info(f'Guardando video '+ video['id']+' en base de datos')
                 createVideo(video)
                 videoComment.append(video)
             else:
+                logging.info(f'Actualizando video '+ video['id']+' en base de datos')
                 if video['date_update'] >= date:
                     if video['commentCount'] != videoExist['commentCount']:
                         videoComment.append(video) 
@@ -35,8 +39,10 @@ def saveVideoByUrl(url: str):
         video = get_video_info(video_id)
         videoExist = getVideosById(video_id)
         if not videoExist:
+            logging.info(f'Guardando video '+ video['id']+' en base de datos')
             createVideo(video)
         else:
+            logging.info(f'Actualizando video '+ video['id']+' en base de datos')
             updateVideo(video, video['id'],)
         return video
     except ValueError:
@@ -52,9 +58,11 @@ def saveVideoBySearch(search: str):
         for video in videosFind:
             videoExist = getVideosSearchById(video['id'])
             if not videoExist:
+                logging.info(f'Guardando video '+ video['id']+' en base de datos')
                 createVideoSearch(video)
                 videoComment.append(video)
             else:
+                logging.info(f'Actualizando video '+ video['id']+' en base de datos')
                 if video['date_update'] >= date:
                     if video['commentCount'] != videoExist['commentCount']:
                         videoComment.append(video) 

@@ -19,7 +19,8 @@ def get_comments_ofvideos(videos):
     logging.info(f'Extrayendo informacion de los comentarios de '+str(len(videos))+' videos')
     for video in videos:
         logging.info(f'Extrayendo informacion de los comentarios del video '+video['id'] +' total comentarios: '+str(video['commentCount']))
-        if int(video['commentCount']) != None:
+        
+        if video['commentCount'] != None:
             cantidad = int(video['commentCount'])
         else:
             cantidad = 0

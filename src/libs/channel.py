@@ -1,4 +1,3 @@
-from xxlimited import Null
 from .connection import youtube_authenticate
 import urllib.parse as p
 from datetime import date, datetime

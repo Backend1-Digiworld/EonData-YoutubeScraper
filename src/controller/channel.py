@@ -1,10 +1,10 @@
 # Libs
 from datetime import datetime, timedelta
 
-from requests import get
-
 from src.libs.channel import get_channel_info, get_channelId
 from src.services.channel import createChannel, getChannelById, getChannelByName, updateChannel
+
+import logging
 
 def saveChannel(channelName: str):
     channel = {}
@@ -14,8 +14,10 @@ def saveChannel(channelName: str):
         
         channelExist = getChannelById(channelId)
         if not channelExist:
+            logging.info(f'Guardando canal '+ channelName+' en base de datos')
             createChannel(channel)
-        else:    
+        else: 
+            logging.info(f'Actualizando canal '+ channelName+' en base de datos')   
             updateChannel(channel, str(channel['id']))  
     except ValueError:
         print(ValueError)
