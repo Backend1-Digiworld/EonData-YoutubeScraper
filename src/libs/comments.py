@@ -46,6 +46,18 @@ def get_comments_ofvideos(videos):
                 else:
                     autor = None
 
+                if item["snippet"]["topLevelComment"]["snippet"]["publishedAt"].__contains__('.'):
+                    fecha = item["snippet"]["topLevelComment"]["snippet"]["publishedAt"].split(".")[0]
+                    publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                else:
+                    publishedAt = item["snippet"]["topLevelComment"]["snippet"]["publishedAt"]
+                
+                if item["snippet"]["topLevelComment"]["snippet"]["updatedAt"].__contains__('.'):
+                    fecha = item["snippet"]["topLevelComment"]["snippet"]["updatedAt"].split(".")[0]
+                    updatedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                else:
+                    updatedAt = item["snippet"]["topLevelComment"]["snippet"]["updatedAt"]
+                
                 comment = {
                     'id': item["snippet"]["topLevelComment"]["id"],
                     'videoId': video['id'],
@@ -57,8 +69,8 @@ def get_comments_ofvideos(videos):
                     'authorChannelId': autor,
                     'likeCount': item["snippet"]["topLevelComment"]["snippet"]["likeCount"],
                     'totalReplyCount': item["snippet"]["totalReplyCount"],
-                    'publishedAt': item["snippet"]["topLevelComment"]["snippet"]["publishedAt"],
-                    'updatedAt': item["snippet"]["topLevelComment"]["snippet"]["updatedAt"],
+                    'publishedAt': publishedAt,
+                    'updatedAt': updatedAt,
                     'date_update': datetime.now()
                 }
                 comments.append(comment)
@@ -76,6 +88,18 @@ def get_comments_ofvideos(videos):
                         else:
                             replycount = 0
                         
+                        if replie["snippet"]["publishedAt"].__contains__('.'):
+                            fecha = replie["snippet"]["publishedAt"].split(".")[0]
+                            publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                        else: 
+                            publishedAt = replie["snippet"]["publishedAt"]
+                        
+                        if replie["snippet"]["updatedAt"].__contains__('.'):
+                            fecha = replie["snippet"]["updatedAt"].split(".")[0]
+                            updatedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                        else:
+                            updatedAt = replie["snippet"]["updatedAt"]
+                        
                         rep = {
                             'id': replie['id'],
                             'commentId': item["snippet"]["topLevelComment"]["id"],
@@ -88,8 +112,8 @@ def get_comments_ofvideos(videos):
                             'authorChannelId': autorrep,
                             'likeCount': replie["snippet"]["likeCount"],
                             'totalReplyCount': replycount,
-                            'publishedAt': replie["snippet"]["publishedAt"],
-                            'updatedAt': replie["snippet"]["updatedAt"],
+                            'publishedAt': publishedAt,
+                            'updatedAt': updatedAt,
                             'date_update': datetime.now()
                         }
                         replies.append(rep)
@@ -134,6 +158,19 @@ def get_comments_onevideo(videoId, videoCommnets):
                 autor = item["snippet"]["topLevelComment"]["snippet"]["authorChannelId"]['value']
             else:
                 autor = None
+                
+            if item["snippet"]["topLevelComment"]["snippet"]["publishedAt"].__contains__('.'):
+                fecha = item["snippet"]["topLevelComment"]["snippet"]["publishedAt"].split(".")[0]
+                publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+            else:
+                publishedAt = item["snippet"]["topLevelComment"]["snippet"]["publishedAt"]
+            
+            if item["snippet"]["topLevelComment"]["snippet"]["updatedAt"].__contains__('.'):
+                fecha = item["snippet"]["topLevelComment"]["snippet"]["updatedAt"].split(".")[0]
+                updatedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+            else:
+                updatedAt = item["snippet"]["topLevelComment"]["snippet"]["updatedAt"]
+            
             comment = {
                 'id': item["snippet"]["topLevelComment"]["id"],
                 'videoId': videoId,
@@ -145,8 +182,8 @@ def get_comments_onevideo(videoId, videoCommnets):
                 'authorChannelId': autor,
                 'likeCount': item["snippet"]["topLevelComment"]["snippet"]["likeCount"],
                 'totalReplyCount': item["snippet"]["totalReplyCount"],
-                'publishedAt': item["snippet"]["topLevelComment"]["snippet"]["publishedAt"],
-                'updatedAt': item["snippet"]["topLevelComment"]["snippet"]["updatedAt"],
+                'publishedAt': publishedAt,
+                'updatedAt': updatedAt,
                 'date_update': datetime.now()
             }
             comments.append(comment)
@@ -163,6 +200,18 @@ def get_comments_onevideo(videoId, videoCommnets):
                         replycount = replie["snippet"]
                     else:
                         replycount = 0
+                    
+                    if replie["snippet"]["publishedAt"].__contains__('.'):
+                        fecha = replie["snippet"]["publishedAt"].split(".")[0]
+                        publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                    else: 
+                        publishedAt = replie["snippet"]["publishedAt"]
+                        
+                    if replie["snippet"]["updatedAt"].__contains__('.'):
+                        fecha = replie["snippet"]["updatedAt"].split(".")[0]
+                        updatedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+                    else:
+                        updatedAt = replie["snippet"]["updatedAt"]
                     rep = {
                         'id': replie['id'],
                         'commentId': item["snippet"]["topLevelComment"]["id"],
@@ -175,8 +224,8 @@ def get_comments_onevideo(videoId, videoCommnets):
                         'authorChannelId': autorrep,
                         'likeCount': replie["snippet"]["likeCount"],
                         'totalReplyCount': replycount,
-                        'publishedAt': replie["snippet"]["publishedAt"],
-                        'updatedAt': replie["snippet"]["updatedAt"],
+                        'publishedAt': publishedAt,
+                        'updatedAt': updatedAt,
                         'date_update': datetime.now()
                     }
                     replies.append(rep)

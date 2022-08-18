@@ -75,11 +75,17 @@ def get_video_info(video_id):
 
     duration_str = hora+':'+minuto+':'+segundos
     
+    if snippet["publishedAt"].__contains__('.'):
+        fecha = snippet["publishedAt"].split(".")[0]
+        publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+    else:
+        publishedAt = snippet["publishedAt"]
+    
     video = {
         'id': video_id,
         'channelId': snippet["channelId"],
         'channelTitle': snippet["channelTitle"],
-        'publishedAt': snippet["publishedAt"],
+        'publishedAt': publishedAt,
         'title': snippet["title"],
         'description': snippet["description"],
         'video_pic': snippet["thumbnails"]["high"]["url"],
@@ -149,11 +155,17 @@ def get_videos_info_byId(videos_ids):
         else:
             comments = None
 
+        if snippet["publishedAt"].__contains__('.'):
+            fecha = snippet["publishedAt"].split(".")[0]
+            publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+        else:
+            publishedAt = snippet["publishedAt"]
+        
         video = {
             'id': videos_ids[count],
             'channelId': snippet["channelId"],
             'channelTitle': snippet["channelTitle"],
-            'publishedAt': snippet["publishedAt"],
+            'publishedAt': publishedAt,
             'title': snippet["title"],
             'description': snippet["description"],
             'tags': tags,
@@ -225,12 +237,18 @@ def get_videosSearch_info_byId(videos_ids, search):
         else:
             comments = None
 
+        if snippet["publishedAt"].__contains__('.'):
+            fecha = snippet["publishedAt"].split(".")[0]
+            publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+        else:
+            publishedAt = snippet["publishedAt"]
+        
         video = {
             'id': videos_ids[count],
             'searchTopic': search,
             'channelId': snippet["channelId"],
             'channelTitle': snippet["channelTitle"],
-            'publishedAt': snippet["publishedAt"],
+            'publishedAt': publishedAt,
             'title': snippet["title"],
             'description': snippet["description"],
             'tags': tags,

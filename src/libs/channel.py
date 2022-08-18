@@ -37,11 +37,17 @@ def get_channel_info(channel_id):
     else:
         country = None
 
+    if snippet["publishedAt"].__contains__('.'):
+        fecha = snippet['publishedAt'].split(".")[0]
+        publishedAt = datetime.strptime(fecha, '%Y-%m-%dT%H:%M:%S')
+    else:
+        publishedAt = snippet["publishedAt"]
+    
     channel = {
         'id': channel_id,
         'title': snippet['title'],
         'description': snippet['description'],
-        'publishedAt': snippet['publishedAt'],
+        'publishedAt': publishedAt,
         'channel_pic': snippet["thumbnails"]["high"]["url"],
         'country': country,
         'viewCount': statistics['viewCount'],
